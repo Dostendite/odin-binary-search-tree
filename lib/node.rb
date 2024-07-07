@@ -1,6 +1,12 @@
 class Node
   include Comparable
-  attr_reader :data
+  attr_accessor :data, :left_child, :right_child
+  
+  def initialize(data)
+    @data = data
+    @left_child = nil
+    @right_child = nil
+  end
 
   def to_s
     "( #{@left_child} ) <- ( #{@data} ) -> ( #{@right_child})"
@@ -8,12 +14,6 @@ class Node
 
   def <=>(other)
     @data <=> other.data
-  end
-
-  def initialize(data)
-    @data = data
-    @left_child = nil
-    @right_child = nil
   end
 
   def set_left_child(data)
