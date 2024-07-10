@@ -7,14 +7,27 @@ class Tree
   end
 
   def insert(value)
+    # add check for value in tree before inserting it
     node = Node.new(value)
     insert_recursive(@root, node)
+  end
+
+  def delete(value)
+    delete_recursive(@root, value)
   end
 
   def clean_ary(ary)
     ary.sort!
     set = Set.new(ary)
     set.to_a
+  end
+
+  # OPTIMIZE -> Make more readable and understand regular implementation
+  def min_value(root = @root)
+    until root.left.nil?
+      root = root.left
+    end
+    root.data
   end
 
   def build_tree(ary = @ary, ary_start = 0, ary_end = (ary.length - 1))
@@ -24,39 +37,57 @@ class Tree
 
     root = Node.new(ary[middle])
 
-    root.left_child = build_tree(ary, ary_start, (middle - 1))
-    root.right_child = build_tree(ary, (middle + 1), ary_end)
+    root.left = build_tree(ary, ary_start, (middle - 1))
+    root.right = build_tree(ary, (middle + 1), ary_end)
 
     root
   end
 
   # pretty print method - courtesy of TOP
   def pretty_print(node = @root, prefix = "", is_left = true)
-    pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
+    pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
-    pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
+    pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 
-  # OPTIMIZE: -> fix comparable spaceship nil bug
-  # remove insert method
+  # OPTIMIZE -> remove insert method
   def insert_recursive(root, node)
-    root = node if root == nil
+    root = node if root.nil?
 
     if node < root
-      root.left_child = insert_recursive(root.left_child, node)
+      root.left = insert_recursive(root.left, node)
     elsif node > root
-      root.right_child = insert_recursive(root.right_child, node)
+      root.right = insert_recursive(root.right, node)
     end
-
     root
   end
 
-  def delete(value)
-    # 3 cases:
-    # leaf -> that's it
-    # one child -> replace it with its child
-    # two children -> find the node that is next biggest (just bigger than it)
-    # explore its right subtree and get the leaf farthest to the left
-    # and replace it with that node (find it all the way to the left)
+  def delete_recursive(root, value)
+    return root if root.nil?
+
+    if value < root.data
+      root.left = delete_recursive(root.left, value)
+    elsif value > root.data
+      root.right = delete_recursive(root.right, value)
+    else
+      # binding.pry
+      if root.left.nil?
+        return root.right
+      elsif root.right.nil?
+        return root.left
+      end
+      # get the inorder successor
+      root.data = min_value(root.right)
+      root.right = delete_recursive(root.right, root.data)
+    end
+    root
+  end
+
+  def traverse(root = @root)
+    return if root.nil?
+
+    puts "Data -> #{root.data}"
+    traverse(root.right)
+    traverse(root.left)
   end
 end
