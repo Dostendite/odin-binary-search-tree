@@ -22,11 +22,9 @@ class Tree
     set.to_a
   end
 
-  # OPTIMIZE -> Make more readable and understand regular implementation
+  # OPTIMIZE: Make more readable and understand regular implementation
   def min_value(root = @root)
-    until root.left.nil?
-      root = root.left
-    end
+    root = root.left until root.left.nil?
     root.data
   end
 
@@ -50,7 +48,7 @@ class Tree
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 
-  # OPTIMIZE -> remove insert method
+  # OPTIMIZE: remove insert method
   def insert_recursive(root, node)
     root = node if root.nil?
 
@@ -76,6 +74,7 @@ class Tree
       elsif root.right.nil?
         return root.left
       end
+
       # get the inorder successor
       root.data = min_value(root.right)
       root.right = delete_recursive(root.right, root.data)
