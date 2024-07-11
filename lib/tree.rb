@@ -8,6 +8,7 @@ class Tree
 
   def insert(value)
     # add check for value in tree before inserting it
+    # (return if find value)?
     node = Node.new(value)
     insert_recursive(@root, node)
   end
@@ -15,6 +16,16 @@ class Tree
   def delete(value)
     delete_recursive(@root, value)
   end
+
+  # def find(root = @root, value)
+  #   return root if root.nil?
+  #   return root if root.data == value
+
+  #   root.left = find(root.left, value)
+  #   root.right = find(root.right, value)
+
+  #   root
+  # end
 
   def clean_ary(ary)
     ary.sort!
@@ -48,6 +59,8 @@ class Tree
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 
+  private
+
   # OPTIMIZE: remove insert method
   def insert_recursive(root, node)
     root = node if root.nil?
@@ -80,13 +93,5 @@ class Tree
       root.right = delete_recursive(root.right, root.data)
     end
     root
-  end
-
-  def traverse(root = @root)
-    return if root.nil?
-
-    puts "Data -> #{root.data}"
-    traverse(root.right)
-    traverse(root.left)
   end
 end
