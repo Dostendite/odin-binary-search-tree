@@ -10,22 +10,29 @@ class Tree
     # add check for value in tree before inserting it
     # (return if find value)?
     node = Node.new(value)
-    insert_recursive(@root, node)
+    insert_recursive(node, @root)
   end
 
   def delete(value)
-    delete_recursive(@root, value)
+    delete_recursive(value, @root)
   end
 
-  # def find(root = @root, value)
-  #   return root if root.nil?
-  #   return root if root.data == value
+  def extract_node(node)
+    puts "Extracting node -> #{node.data}"
+    node.data
+  end
 
-  #   root.left = find(root.left, value)
-  #   root.right = find(root.right, value)
-
-  #   root
-  # end
+  # implement recursive approach too
+  def find(value, root = @root)
+    loop do
+      return root if root.data == value
+      if value < root.data
+        root = root.left
+      elsif value > root.data
+        root = root.right
+      end
+    end
+  end
 
   def clean_ary(ary)
     ary.sort!
@@ -62,24 +69,24 @@ class Tree
   private
 
   # OPTIMIZE: remove insert method
-  def insert_recursive(root, node)
+  def insert_recursive(node, root)
     root = node if root.nil?
 
     if node < root
-      root.left = insert_recursive(root.left, node)
+      root.left = insert_recursive(node, root.left)
     elsif node > root
-      root.right = insert_recursive(root.right, node)
+      root.right = insert_recursive(node, root.right)
     end
     root
   end
 
-  def delete_recursive(root, value)
+  def delete_recursive(value, root)
     return root if root.nil?
 
     if value < root.data
-      root.left = delete_recursive(root.left, value)
+      root.left = delete_recursive(value, root.left)
     elsif value > root.data
-      root.right = delete_recursive(root.right, value)
+      root.right = delete_recursive(value, root.right)
     else
       # binding.pry
       if root.left.nil?
@@ -90,7 +97,7 @@ class Tree
 
       # get the inorder successor
       root.data = min_value(root.right)
-      root.right = delete_recursive(root.right, root.data)
+      root.right = delete_recursive(root.data, root.right)
     end
     root
   end
