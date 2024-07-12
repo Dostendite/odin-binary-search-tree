@@ -22,16 +22,30 @@ class Tree
     node.data
   end
 
-  # implement recursive approach too
   def find(value, root = @root)
     loop do
       return root if root.data == value
+
       if value < root.data
         root = root.left
       elsif value > root.data
         root = root.right
       end
     end
+  end
+
+  # is this ok?
+  def find_recursive(value, root = @root)
+    return root if root.nil?
+
+    if value < root.data
+      root = find_recursive(value, root.left)
+    elsif value > root.data
+      root = find_recursive(value, root.right)
+    end
+
+    # find a way to somehow aggregate the returns
+    root
   end
 
   def clean_ary(ary)
@@ -88,7 +102,6 @@ class Tree
     elsif value > root.data
       root.right = delete_recursive(value, root.right)
     else
-      # binding.pry
       if root.left.nil?
         return root.right
       elsif root.right.nil?
