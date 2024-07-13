@@ -9,10 +9,13 @@ class Node
   end
 
   def to_s
-    "(#{@left}) <- (#{@data}) -> (#{@right})"
+    ret_string = "(#{data})"
+    ret_string.prepend("(#{left}) <- ") unless @left.nil?
+    ret_string << " -> (#{right})" unless @right.nil?
+
+    ret_string
   end
 
-  # this might be a bad practice, do some research
   def <=>(other)
     @data <=> other.data
   end
