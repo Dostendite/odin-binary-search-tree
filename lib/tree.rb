@@ -40,10 +40,11 @@ class Tree
     queue.unshift(@root)
 
     until queue.empty?
-      yield queue[-1] if block_given?
+      current_node = queue[-1]
+      yield current_node if block_given?
 
-      queue.unshift(queue[-1].left) unless queue[-1].left.nil?
-      queue.unshift(queue[-1].right) unless queue[-1].right.nil?
+      queue.unshift(current_node.left) unless current_node.left.nil?
+      queue.unshift(current_node.right) unless current_node.right.nil?
 
       visited_nodes << queue.pop
     end
