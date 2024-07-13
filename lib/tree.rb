@@ -23,8 +23,7 @@ class Tree
   end
 
   def find(value, root = @root)
-    return root if root.nil?
-    return root if root.data == value
+    return root if root.nil? || root.data == value
 
     if value < root.data
       find(value, root.left)
@@ -33,13 +32,31 @@ class Tree
     end
   end
 
+  def level_order
+    return if @root.nil?
+
+    visited_nodes = []
+    queue = []
+    queue.unshift(@root)
+
+    until queue.empty?
+      yield queue[-1] if block_given?
+
+      queue.unshift(queue[-1].left) unless queue[-1].left.nil?
+      queue.unshift(queue[-1].right) unless queue[-1].right.nil?
+
+      visited_nodes << queue.pop
+    end
+    visited_nodes
+  end
+
   def clean_ary(ary)
     ary.sort!
     set = Set.new(ary)
     set.to_a
   end
 
-  # OPTIMIZE: Make more readable and understand regular implementation
+  # OPTIMIZE: make more readable and understand regular implementation
   def min_value(root = @root)
     root = root.left until root.left.nil?
     root.data
