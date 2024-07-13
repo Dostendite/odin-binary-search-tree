@@ -23,29 +23,14 @@ class Tree
   end
 
   def find(value, root = @root)
-    loop do
-      return root if root.data == value
-
-      if value < root.data
-        root = root.left
-      elsif value > root.data
-        root = root.right
-      end
-    end
-  end
-
-  # is this ok?
-  def find_recursive(value, root = @root)
     return root if root.nil?
+    return root if root.data == value
 
     if value < root.data
-      root = find_recursive(value, root.left)
+      find(value, root.left)
     elsif value > root.data
-      root = find_recursive(value, root.right)
+      find(value, root.right)
     end
-
-    # find a way to somehow aggregate the returns
-    root
   end
 
   def clean_ary(ary)
