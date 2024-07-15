@@ -7,13 +7,15 @@ class Tree
   end
 
   def insert(value)
-    # add check for value in tree before inserting it
-    # (return if find value)?
+    @ary << value
+    clean_ary(@ary)
     node = Node.new(value)
     insert_recursive(node, @root)
   end
 
   def delete(value)
+    @ary.delete(value)
+    clean_ary(@ary)
     delete_recursive(value, @root)
   end
 
@@ -32,13 +34,52 @@ class Tree
     end
   end
 
+  # OPTIMIZE: depth first traversal methods
+  def inorder(root = @root, ret_ary = [])
+    return if root.nil?
+
+    inorder(root.left, ret_ary)
+    yield root if block_given?
+    ret_ary << root
+    inorder(root.right, ret_ary)
+
+    return ret_ary if ret_ary.length == @ary.length
+
+    root
+  end
+
+  def preorder(root = @root, ret_ary = [])
+    return root if root.nil?
+
+    yield root if block_given?
+    ret_ary << root
+    preorder(root.left, ret_ary)
+    preorder(root.right, ret_ary)
+
+    return ret_ary if ret_ary.length == @ary.length
+
+    root
+  end
+
+  def postorder(root = @root, ret_ary = [])
+    return root if root.nil?
+
+    postorder(root.left, ret_ary)
+    postorder(root.right, ret_ary)
+    yield root if block_given?
+    ret_ary << root
+
+    return ret_ary if ret_ary.length == @ary.length
+
+    root
+  end
+
   def level_order
     return if @root.nil?
 
     visited_nodes = []
     queue = []
     queue.unshift(@root)
-
     until queue.empty?
       current_node = queue[-1]
       yield current_node if block_given?
