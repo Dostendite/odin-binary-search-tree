@@ -34,6 +34,10 @@ class Tree
     end
   end
 
+  # def height(node)
+  #   return nil if node != @arynode.data
+  # end
+
   # OPTIMIZE: depth first traversal methods
   def inorder(root = @root, ret_ary = [])
     return if root.nil?
@@ -125,6 +129,15 @@ class Tree
   end
 
   private
+
+  def height_recursive(node, edges = 0)
+    return edges if node.left_child.nil? && node.right_child.nil?
+
+    node_left = height(node.left, edges += 1)
+    node_right = height(node.right, edges += 1)
+
+    [node_left, node_right].max
+  end
 
   # OPTIMIZE: remove insert method
   def insert_recursive(node, root)
