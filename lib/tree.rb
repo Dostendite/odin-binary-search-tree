@@ -24,6 +24,19 @@ class Tree
     node.data
   end
 
+  def balanced?
+    left_subtree_depth = balanced_recursive(@root.left)
+    right_subtree_depth = balanced_recursive(@root.right)
+    p left_subtree_depth
+    p right_subtree_depth
+
+    if (left_subtree_depth - right_subtree_depth).abs > 1
+      false
+    else
+      true
+    end
+  end
+
   def find(value, root = @root)
     return root if root.nil? || root.data == value
 
@@ -41,12 +54,12 @@ class Tree
     height_recursive(target_node)
   end
 
+  # add edge case handling
   def depth(value)
     root = @root
-    found = false
     edges = 0
 
-    until found
+    loop do
       if value == root.data
         return edges
       elsif value > root.data
@@ -150,6 +163,27 @@ class Tree
   end
 
   private
+
+  def balanced_recursive(root)
+    puts "Traversing root #{root.data}"
+    return depth(root.data) if root.left.nil? && root.right.nil?
+
+    unless root.left.nil?
+      left_depth = balanced_recursive(root.left)
+    end
+
+    unless root.right.nil?
+      right_depth = balanced_recursive(root.right)
+    end
+
+    if left_depth.nil?
+      right_depth
+    elsif right_depth.nil?
+      left_depth
+    else
+      [left_depth, right_depth].max
+    end
+  end
 
   def height_recursive(node, edges = 0)
     return nil if node.nil?
