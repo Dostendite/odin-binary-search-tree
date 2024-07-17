@@ -34,9 +34,12 @@ class Tree
     end
   end
 
-  # def height(node)
-  #   return nil if node != @arynode.data
-  # end
+  def height(value)
+    target_node = find(value)
+    return nil if target_node.nil?
+
+    height_recursive(target_node)
+  end
 
   # OPTIMIZE: depth first traversal methods
   def inorder(root = @root, ret_ary = [])
@@ -131,10 +134,15 @@ class Tree
   private
 
   def height_recursive(node, edges = 0)
-    return edges if node.left_child.nil? && node.right_child.nil?
+    return nil if node.nil?
+    return edges if node.left.nil? && node.right.nil?
 
-    node_left = height(node.left, edges += 1)
-    node_right = height(node.right, edges += 1)
+    # UNLEASH THE SEEKERS
+    node_left = height_recursive(node.left, edges + 1)
+    node_right = height_recursive(node.right, edges + 1)
+
+    return node_right if node_left.nil?
+    return node_left if node_right.nil?
 
     [node_left, node_right].max
   end
