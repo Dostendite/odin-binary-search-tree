@@ -24,17 +24,16 @@ class Tree
     node.data
   end
 
+  def rebalance
+    new_array = rebalance_recursive(@root)
+    @root = build_tree(clean_ary(new_array))
+  end
+
   def balanced?
     left_subtree_depth = balanced_recursive(@root.left)
     right_subtree_depth = balanced_recursive(@root.right)
-    p left_subtree_depth
-    p right_subtree_depth
 
-    if (left_subtree_depth - right_subtree_depth).abs > 1
-      false
-    else
-      true
-    end
+    (left_subtree_depth - right_subtree_depth).abs <= 1
   end
 
   def find(value, root = @root)
@@ -73,43 +72,49 @@ class Tree
   end
 
   # OPTIMIZE: depth first traversal methods
-  def inorder(root = @root, ret_ary = [])
+  def inorder(root = @root, return_ary = [], &block)
     return if root.nil?
 
-    inorder(root.left, ret_ary)
-    yield root if block_given?
-    ret_ary << root
-    inorder(root.right, ret_ary)
+    inorder(root.left, return_ary, &block)
+    yield(root) if block_given?
+    return_ary << root
+    inorder(root.right, return_ary, &block)
 
-    return ret_ary if ret_ary.length == @ary.length
-
-    root
+    if return_ary.length == @ary.length
+      return_ary
+    else
+      root
+    end
   end
 
-  def preorder(root = @root, ret_ary = [])
+  def preorder(root = @root, return_ary = [], &block)
     return root if root.nil?
 
     yield root if block_given?
-    ret_ary << root
-    preorder(root.left, ret_ary)
-    preorder(root.right, ret_ary)
+    return_ary << root
+    preorder(root.left, return_ary, &block)
+    preorder(root.right, return_ary, &block)
 
-    return ret_ary if ret_ary.length == @ary.length
-
-    root
+    if return_ary.length == @ary.length
+      return_ary
+    else
+      root
+    end
   end
 
-  def postorder(root = @root, ret_ary = [])
+  def postorder(root = @root, return_ary = [], &block)
     return root if root.nil?
 
-    postorder(root.left, ret_ary)
-    postorder(root.right, ret_ary)
+    postorder(root.left, return_ary, &block)
+    postorder(root.right, return_ary, &block)
     yield root if block_given?
-    ret_ary << root
+    return_ary << root
 
-    return ret_ary if ret_ary.length == @ary.length
-
-    root
+    if return_ary.length == @ary.length
+      return_ary
+    else
+      root
+    end
   end
 
   def level_order
@@ -164,8 +169,15 @@ class Tree
 
   private
 
+  def rebalance_recursive(root = @root, return_ary = [])
+    return nil if root.nil?
+
+    rebalance_recursive(root.left, return_ary)
+    rebalance_recursive(root.right, return_ary)
+    return_ary << root.data unless root.nil?
+  end
+
   def balanced_recursive(root)
-    puts "Traversing root #{root.data}"
     return depth(root.data) if root.left.nil? && root.right.nil?
 
     unless root.left.nil?
