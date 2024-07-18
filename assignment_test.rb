@@ -35,12 +35,18 @@ yggdrasil.insert(122)
 yggdrasil.insert(128)
 yggdrasil.insert(105)
 yggdrasil.pretty_print
+puts
+
+puts "Is the tree balanced?"
 p yggdrasil.balanced?
 puts
 
 puts "Rebalancing the treee..."
 yggdrasil.rebalance
 yggdrasil.pretty_print
+puts
+
+puts "Is the tree balanced?"
 p yggdrasil.balanced?
 puts
 
