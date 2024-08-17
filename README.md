@@ -11,6 +11,7 @@ given in the BST project from the TOP curriculum.
 
 ## Possible improvements
 
+- Add unit tests
 - Optimize recursive methods
 - Develop my method to print the tree
 - Maybe get rid of private methods altogether
